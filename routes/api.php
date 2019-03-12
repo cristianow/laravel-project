@@ -16,3 +16,10 @@ use Illuminate\Http\Request;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+$this->post('auth','Auth\AuthApiController@authenticate');
+$this->group(['prefix'=>'/'],function(){
+    $this->group(['middleware'=>'jwt.auth'],function(){
+        $this->get('/catraca','Modulos\Config\CatracaController@indexJ');
+    });
+    
+});

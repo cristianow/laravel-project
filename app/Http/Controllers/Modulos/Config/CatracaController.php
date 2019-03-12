@@ -13,6 +13,9 @@ class CatracaController extends StandardController
         $this->request=$request;
         $this->model=$catraca;
     }
+    public function consulta(){
+        
+    }
 
    
 }
