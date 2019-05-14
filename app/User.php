@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\Permission;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -27,14 +28,23 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password', 'remember_token',
     ];
+    public function roles(){
+        return $this->belongsToMany(\App\Models\Role::class);
+    }
 
+public function hasPermission(Permission $permission){
+        return $this->hasAnyRoles($permission->roles);
+}
 
+public function hasAnyRoles($roles){
+    if(is_array($roles) || is_object($roles)){
+        return !! $roles->intersect($this->roles)->count();
+        }else{
+            
+            return $this->roles->contains('name',$roles);
+        }
+}
 
-/**
-* Get the identifier that will be stored in the subject claim of the JWT.
-*
-* @return mixed
-*/
 public function getJWTIdentifier()
 {
 return $this->getKey();
